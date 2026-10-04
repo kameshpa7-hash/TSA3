@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Keyword Finder – Text Keyword Extraction | Experiment 03</title>
+  <meta name="description" content="College Text & Speech Analysis Laboratory Project - Experiment 03: Text Keyword Extraction using algorithmic word frequency and stop-word filtering.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Background Glow Accents -->
+  <div class="bg-glow bg-glow-1" aria-hidden="true"></div>
+  <div class="bg-glow bg-glow-2" aria-hidden="true"></div>
+
+  <div class="app-wrapper">
+    <!-- Header Section -->
+    <header class="site-header">
+      <div class="header-badge">
+        <span class="badge-dot"></span>
+        <span>TEXT &amp; SPEECH ANALYSIS LAB</span>
+      </div>
+      <h1 class="main-title">TEXT &amp; SPEECH ANALYSIS</h1>
+      <div class="experiment-pill">
+        <span class="exp-code">Experiment 03</span>
+        <span class="exp-divider"></span>
+        <span class="exp-name">Keyword Extraction</span>
+      </div>
+      <p class="tool-subheading">Keyword Finder – Text Keyword Extraction</p>
+      
+      <!-- Academic Definition Quote -->
+      <div class="concept-callout">
+        <div class="concept-icon">💡</div>
+        <div class="concept-content">
+          <span class="concept-label">Core Principle:</span>
+          <p class="concept-text">“Keyword extraction identifies the words or phrases that represent the main topics of a document.”</p>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Application Container -->
+    <main class="main-content">
+      <!-- Input Section -->
+      <section class="card input-card" aria-labelledby="input-heading">
+        <div class="card-header">
+          <div class="card-title-group">
+            <h2 id="input-heading" class="card-title">Document Input</h2>
+            <p class="card-subtitle">Supply text data for tokenization, stop-word elimination, and frequency-based key term discovery.</p>
+          </div>
+          <div class="preset-selector-group">
+            <label for="examplePreset" class="sr-only">Select Preset</label>
+            <select id="examplePreset" class="preset-dropdown" title="Choose a pre-built example text">
+              <option value="healthcare">Preset 1: Healthcare &amp; AI (Lab Standard)</option>
+              <option value="nlp">Preset 2: Speech &amp; Language Technology</option>
+              <option value="climate">Preset 3: Sustainable Green Energy</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="textarea-container">
+          <textarea 
+            id="inputText" 
+            placeholder="Paste a paragraph or article here..." 
+            rows="7" 
+            spellcheck="true"
+            aria-label="Paste a paragraph or article here"
+          ></textarea>
+          <div class="textarea-footer">
+            <span id="charCountDisplay" class="char-count">0 characters | 0 words</span>
+            <button type="button" id="clearTextBtn" class="link-btn" title="Quick clear text">Clear text</button>
+          </div>
+        </div>
+
+        <!-- Algorithm Pipeline Preview -->
+        <div class="pipeline-tracker" id="pipelineTracker" aria-label="NLP Processing Stages">
+          <div class="pipeline-step"><span class="step-num">1</span> Lowercase</div>
+          <div class="pipeline-arrow">→</div>
+          <div class="pipeline-step"><span class="step-num">2</span> Punctuation Removal</div>
+          <div class="pipeline-arrow">→</div>
+          <div class="pipeline-step"><span class="step-num">3</span> Tokenization</div>
+          <div class="pipeline-arrow">→</div>
+          <div class="pipeline-step"><span class="step-num">4</span> Stop-Word Filtering</div>
+          <div class="pipeline-arrow">→</div>
+          <div class="pipeline-step"><span class="step-num">5</span> Frequency Ranking</div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="actions-row">
+          <div class="primary-actions">
+            <button type="button" id="extractBtn" class="btn btn-primary">
+              <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                <path d="M10 7v6m3-3H7"></path>
+              </svg>
+              <span>Extract Keywords</span>
+            </button>
+            <button type="button" id="loadExampleBtn" class="btn btn-secondary">
+              <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+              </svg>
+              <span>Load Example</span>
+            </button>
+            <button type="button" id="clearAllBtn" class="btn btn-ghost">
+              <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+              </svg>
+              <span>Clear</span>
+            </button>
+          </div>
+
+          <!-- Parameter Controls -->
+          <div class="settings-actions">
+            <div class="param-item">
+              <label for="topNLimit">Display Count:</label>
+              <select id="topNLimit" class="param-select">
+                <option value="6">Top 6</option>
+                <option value="10" selected>Top 10</option>
+                <option value="15">Top 15</option>
+                <option value="25">Top 25</option>
+                <option value="all">All Keywords</option>
+              </select>
+            </div>
+            <div class="param-item">
+              <label for="minWordLength">Min Length:</label>
+              <select id="minWordLength" class="param-select">
+                <option value="2">2+ chars</option>
+                <option value="3" selected>3+ chars</option>
+                <option value="4">4+ chars</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Status Notification / Feedback -->
+      <div id="statusNotification" class="status-banner hidden" role="status" aria-live="polite"></div>
+
+      <!-- Analysis Results Section -->
+      <section id="resultsSection" class="results-container hidden" aria-labelledby="results-heading">
+        <!-- Metrics Bar -->
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-header">
+              <span class="metric-title">Total Words</span>
+              <span class="metric-icon">📄</span>
+            </div>
+            <div id="statTotalWords" class="metric-value">0</div>
+            <div class="metric-footnote">Full input token count</div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-header">
+              <span class="metric-title">Unique Words</span>
+              <span class="metric-icon">🔍</span>
+            </div>
+            <div id="statUniqueWords" class="metric-value">0</div>
+            <div class="metric-footnote">Distinct vocabulary types</div>
+          </div>
+
+          <div class="metric-card highlight-metric">
+            <div class="metric-header">
+              <span class="metric-title">Keywords Extracted</span>
+              <span class="metric-icon">✨</span>
+            </div>
+            <div id="statExtractedKeywords" class="metric-value">0</div>
+            <div class="metric-footnote">After stop-word exclusion</div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-header">
+              <span class="metric-title">Stop Words Filtered</span>
+              <span class="metric-icon">🛡️</span>
+            </div>
+            <div id="statStopwordsCount" class="metric-value">0</div>
+            <div id="statStopwordsRatio" class="metric-footnote">0% of total text</div>
+          </div>
+        </div>
+
+        <!-- Keyword Cloud Section -->
+        <section class="card cloud-card" aria-labelledby="cloud-heading">
+          <div class="card-header">
+            <div>
+              <h3 id="cloud-heading" class="card-title">Visual Keyword Cloud</h3>
+              <p class="card-subtitle">Word size and intensity represent relative occurrence frequency in the document.</p>
+            </div>
+            <div class="cloud-legend">
+              <span class="legend-chip legend-high">High Frequency</span>
+              <span class="legend-chip legend-med">Medium</span>
+              <span class="legend-chip legend-low">Low</span>
+            </div>
+          </div>
+          <div id="keywordCloud" class="cloud-canvas" role="region" aria-label="Visual Word Cloud">
+            <!-- Dynamic Keyword Cloud Tags rendered here -->
+          </div>
+        </section>
+
+        <!-- Top Keywords Cards Section -->
+        <section class="card keywords-card" aria-labelledby="keywords-heading">
+          <div class="card-header">
+            <div>
+              <h3 id="keywords-heading" class="card-title">Top Keywords</h3>
+              <p class="card-subtitle">Ranked frequency list with detailed occurrence statistics and relative volume bars.</p>
+            </div>
+            <div class="export-actions">
+              <button type="button" id="copyKeywordsBtn" class="btn btn-small">
+                <svg class="btn-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"></path>
+                </svg>
+                <span>Copy List</span>
+              </button>
+              <button type="button" id="downloadCsvBtn" class="btn btn-small">
+                <svg class="btn-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                <span>Export CSV</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Cards Grid -->
+          <div id="keywordCardsGrid" class="cards-grid">
+            <!-- Dynamic Keyword Cards rendered here -->
+          </div>
+        </section>
+
+        <!-- Academic Process Inspector (Collapsible / Educational) -->
+        <section class="card inspector-card">
+          <details class="inspector-accordion" open>
+            <summary class="inspector-summary">
+              <div class="summary-left">
+                <span class="inspector-badge">NLP Pipeline Step-by-Step Inspector</span>
+                <span class="inspector-hint">Click to expand or collapse internal representation</span>
+              </div>
+            </summary>
+            <div class="inspector-body">
+              <div class="pipeline-columns">
+                <div class="pipeline-col">
+                  <div class="pipeline-col-header">
+                    <h4>1. Filtered Stop Words</h4>
+                    <span id="filteredCountBadge" class="count-tag">0 words</span>
+                  </div>
+                  <div id="filteredStopwordsList" class="token-cloud-box">
+                    <!-- List of discarded stop words -->
+                  </div>
+                </div>
+                <div class="pipeline-col">
+                  <div class="pipeline-col-header">
+                    <h4>2. Cleaned Content Tokens</h4>
+                    <span id="cleanTokensCountBadge" class="count-tag">0 tokens</span>
+                  </div>
+                  <div id="cleanTokensList" class="token-cloud-box">
+                    <!-- Retained content words -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </details>
+        </section>
+      </section>
+
+      <!-- Educational Methodology Footer Box -->
+      <section class="card methodology-card">
+        <h3 class="methodology-title">Laboratory Methodology &amp; Algorithm Notes</h3>
+        <div class="methodology-grid">
+          <div class="methodology-item">
+            <span class="methodology-icon">🔡</span>
+            <h4>Case Normalization</h4>
+            <p>Converts all input characters to lowercase so identical words with different capitalization (e.g. <em>“Artificial”</em> and <em>“artificial”</em>) are counted collectively.</p>
+          </div>
+          <div class="methodology-item">
+            <span class="methodology-icon">✂️</span>
+            <h4>Punctuation Stripping</h4>
+            <p>Removes punctuation marks, quotation symbols, periods, and commas to prevent punctuation from clinging to word tokens.</p>
+          </div>
+          <div class="methodology-item">
+            <span class="methodology-icon">🛑</span>
+            <h4>Stop-Word Removal</h4>
+            <p>Filters out non-informative syntactic function words (articles, prepositions, conjunctions such as <em>“the”</em>, <em>“is”</em>, <em>“and”</em>) to isolate semantic topic words.</p>
+          </div>
+          <div class="methodology-item">
+            <span class="methodology-icon">📊</span>
+            <h4>Frequency Distribution</h4>
+            <p>Calculates term frequency <em>TF(w)</em>, sorts candidate keywords in descending order of occurrence, and normalizes sizing for tag cloud rendering.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+      <p>Text &amp; Speech Analysis Laboratory • Experiment 03: Keyword Extraction</p>
+      <p class="copyright-text">Computer Science &amp; Engineering Department • Academic Project Implementation</p>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
